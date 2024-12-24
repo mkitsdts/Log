@@ -5,7 +5,7 @@
 #include <string>
 #include <mutex>
 #include <thread>
-#include <condition_variable>
+#include <chrono>
 
 const std::string SAVING_PATH = "./log.txt";        // 日志保存路径
 constexpr auto MAX_LOG_SIZE = 1024;                 // 日志最大缓冲数量
@@ -69,7 +69,10 @@ public:
         switch(level){
         case INFO:{
             std::lock_guard<std::mutex> lock(add_mux);
-            std::string tmp = "[INFO]:" + message;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[INFO]:" + message;
             log_queue.push(tmp);
             if(log_queue.size() > MAX_LOG_SIZE)
                 flush();
@@ -77,7 +80,10 @@ public:
         }
         case DEBUG:{
             std::lock_guard<std::mutex> lock(add_mux);
-            std::string tmp = "[DEBUG]:" + message;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[DEBUG]:" + message;
             log_queue.push(tmp);
             if(log_queue.size() > MAX_LOG_SIZE)
                 flush();
@@ -85,14 +91,20 @@ public:
         }
         case WARN:{
             std::lock_guard<std::mutex> lock(add_mux);
-            std::string tmp = "[WARN]:" + message;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[WARN]:" + message;
             log_queue.push(tmp);
             flush();
             break;
         }
         case ERROR:{
             std::lock_guard<std::mutex> lock(add_mux);
-            std::string tmp = "[ERROR]:" + message;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[ERROR]:" + message;
             log_queue.push(tmp);
             std::cout<<tmp<<std::endl;
             flush();
