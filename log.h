@@ -7,6 +7,7 @@
 #include <thread>
 #include <vector>
 #include <chrono>
+#include <csignal>
 
 const std::string SAVING_PATH = "./log.txt";        // 日志保存路径
 constexpr auto MAX_LOG_SIZE = 1024;                 // 日志最大缓冲数量
@@ -24,6 +25,11 @@ public:
             std::lock_guard<std::mutex> lock(create_mux);
             if (log == nullptr){ // Double-checked locking
                 log = new Log();
+                std::signal(SIGINT, [](int signum){
+                    log->flush();
+                    delete log;
+                    exit(0);
+                });
                 flush_thread = std::make_unique<std::thread>([&](){
                     while(true){
                         if(flush_flag){
