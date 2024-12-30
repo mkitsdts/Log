@@ -5,6 +5,7 @@
 #include <string>
 #include <mutex>
 #include <thread>
+#include <vector>
 #include <chrono>
 
 const std::string SAVING_PATH = "./log.txt";        // 日志保存路径
@@ -21,8 +22,20 @@ public:
         if (log == nullptr)
         {
             std::lock_guard<std::mutex> lock(create_mux);
-            if (log == nullptr) // Double-checked locking
+            if (log == nullptr){ // Double-checked locking
                 log = new Log();
+                flush_thread = std::make_unique<std::thread>([&](){
+                    while(true){
+                        if(flush_flag){
+                            log->flush();
+                            flush_flag = false;
+                        }else if(log->log_queue.size() > MAX_LOG_SIZE){
+                            log->flush();
+                        }
+                    }
+                });
+                flush_thread->detach();
+            }
         }
         return log;
     }
@@ -31,30 +44,38 @@ public:
         switch(level){
         case INFO:{
             std::lock_guard<std::mutex> lock(add_mux);
-            std::string tmp = "[INFO]:" + message;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[INFO]:" + message;
             log_queue.push(tmp);
-            if(log_queue.size() > MAX_LOG_SIZE)
-                flush();
             break;
         }
         case DEBUG:{
             std::lock_guard<std::mutex> lock(add_mux);
-            std::string tmp = "[DEBUG]:" + message;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[DEBUG]:" + message;
             log_queue.push(tmp);
-            if(log_queue.size() > MAX_LOG_SIZE)
-                flush();
             break;
         }
         case WARN:{
             std::lock_guard<std::mutex> lock(add_mux);
-            std::string tmp = "[WARN]:" + message;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[WARN]:" + message;
             log_queue.push(tmp);
             flush();
             break;
         }
         case ERROR:{
             std::lock_guard<std::mutex> lock(add_mux);
-            std::string tmp = "[ERROR]:" + message;
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[ERROR]:" + message;
             log_queue.push(tmp);
             std::cout<<tmp<<std::endl;
             flush();
@@ -74,8 +95,6 @@ public:
             std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
             tmp += "[INFO]:" + message;
             log_queue.push(tmp);
-            if(log_queue.size() > MAX_LOG_SIZE)
-                flush();
             break;
         }
         case DEBUG:{
@@ -85,8 +104,6 @@ public:
             std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
             tmp += "[DEBUG]:" + message;
             log_queue.push(tmp);
-            if(log_queue.size() > MAX_LOG_SIZE)
-                flush();
             break;
         }
         case WARN:{
@@ -140,10 +157,12 @@ private:
         t.detach();
     }
 private:
+    inline static bool flush_flag = false;
     std::queue<std::string> log_queue;
     std::queue<std::string> log_queue_tmp;
     std::mutex flush_mux;
     std::mutex add_mux;
+    inline static std::unique_ptr<std::thread> flush_thread;
     inline static std::mutex create_mux{};
     inline static Log* log = nullptr;
 };
