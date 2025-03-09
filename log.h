@@ -9,28 +9,30 @@
 #include <chrono>
 #include <csignal>
 
-const std::string SAVING_PATH = "./log.txt";        // »’÷æ±£¥Ê¬∑æ∂
-constexpr auto MAX_LOG_SIZE = 1024;                 // »’÷æ◊Ó¥Ûª∫≥Â ˝¡ø
+const std::string SAVING_PATH = "./log.txt"; // Êó•Âøó‰øùÂ≠òË∑ØÂæÑ
+constexpr auto MAX_LOG_SIZE = 1024;          // Êó•ÂøóÊúÄÂ§ßÁºìÂÜ≤Êï∞Èáè
 constexpr auto DEBUG = 0;
 constexpr auto INFO = 1;
 constexpr auto WARN = 2;
-constexpr auto ERROR = 3;                           
+constexpr auto ERROR = 3;
 
 class Log
 {
 public:
-    inline static Log* instance(){
+    inline static Log *instance()
+    {
         if (log == nullptr)
         {
             std::lock_guard<std::mutex> lock(create_mux);
-            if (log == nullptr){ // Double-checked locking
+            if (log == nullptr)
+            { // Double-checked locking
                 log = new Log();
-                std::signal(SIGINT, [](int signum){
-                    log->flush();
+                std::signal(SIGINT, [](int signum)
+                            {
                     delete log;
-                    exit(0);
-                });
-                flush_thread = std::make_unique<std::thread>([&](){
+                    exit(0); });
+                flush_thread = std::make_unique<std::thread>([&]()
+                {
                     while(true){
                         if(flush_flag){
                             log->flush();
@@ -38,7 +40,7 @@ public:
                         }else if(log->log_queue.size() > MAX_LOG_SIZE){
                             log->flush();
                         }
-                    }
+                    } 
                 });
                 flush_thread->detach();
             }
@@ -46,18 +48,12 @@ public:
         return log;
     }
 
-    void add(const std::string& message, int level = INFO){
-        switch(level){
-        case INFO:{
-            std::lock_guard<std::mutex> lock(add_mux);
-            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            auto tm = std::localtime(&now);
-            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
-            tmp += "[INFO]:" + message;
-            log_queue.push(tmp);
-            break;
-        }
-        case DEBUG:{
+    void add(const std::string &message, int level = INFO)
+    {
+        switch (level)
+        {
+        case DEBUG:
+        {
             std::lock_guard<std::mutex> lock(add_mux);
             auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
             auto tm = std::localtime(&now);
@@ -66,7 +62,18 @@ public:
             log_queue.push(tmp);
             break;
         }
-        case WARN:{
+        case INFO:
+        {
+            std::lock_guard<std::mutex> lock(add_mux);
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            auto tm = std::localtime(&now);
+            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
+            tmp += "[INFO]:" + message;
+            log_queue.push(tmp);
+            break;
+        }
+        case WARN:
+        {
             std::lock_guard<std::mutex> lock(add_mux);
             auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
             auto tm = std::localtime(&now);
@@ -76,60 +83,15 @@ public:
             flush();
             break;
         }
-        case ERROR:{
+        case ERROR:
+        {
             std::lock_guard<std::mutex> lock(add_mux);
             auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
             auto tm = std::localtime(&now);
             std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
             tmp += "[ERROR]:" + message;
             log_queue.push(tmp);
-            std::cout<<tmp<<std::endl;
-            flush();
-            break;
-        }
-        default:
-            break;
-        }
-    }
-
-    void add(std::string&& message, int level = INFO){
-        switch(level){
-        case INFO:{
-            std::lock_guard<std::mutex> lock(add_mux);
-            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            auto tm = std::localtime(&now);
-            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
-            tmp += "[INFO]:" + message;
-            log_queue.push(tmp);
-            break;
-        }
-        case DEBUG:{
-            std::lock_guard<std::mutex> lock(add_mux);
-            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            auto tm = std::localtime(&now);
-            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
-            tmp += "[DEBUG]:" + message;
-            log_queue.push(tmp);
-            break;
-        }
-        case WARN:{
-            std::lock_guard<std::mutex> lock(add_mux);
-            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            auto tm = std::localtime(&now);
-            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
-            tmp += "[WARN]:" + message;
-            log_queue.push(tmp);
-            flush();
-            break;
-        }
-        case ERROR:{
-            std::lock_guard<std::mutex> lock(add_mux);
-            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            auto tm = std::localtime(&now);
-            std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
-            tmp += "[ERROR]:" + message;
-            log_queue.push(tmp);
-            std::cout<<tmp<<std::endl;
+            std::cout << tmp << std::endl;
             flush();
             break;
         }
@@ -140,28 +102,50 @@ public:
 
 private:
     Log() = default;
-    ~Log(){
-        flush();
+    ~Log()
+    {
+        auto f = [this]()
+        {
+            std::lock_guard<std::mutex> lock(flush_mux);
+            if (this->log_queue.empty())
+            {
+                return;
+            }
+            std::ofstream out(SAVING_PATH, std::ios::app);
+            while (!(this->log_queue).empty())
+            {
+                out << (this->log_queue_tmp).front() << "\n";
+                (this->log_queue_tmp).pop();
+            }
+            out.close();
+        };
+        std::thread t(f);
+        t.join();
     }
 
-    void flush(){
-        auto f = [this](){
-        std::lock_guard<std::mutex> lock(flush_mux);
-        if(this->log_queue.empty()){
-            return;
-        }
-        this->log_queue_tmp = std::move(this->log_queue);
-        this->log_queue = std::queue<std::string>{};
-        std::ofstream out(SAVING_PATH, std::ios::app);
-        while(!(this->log_queue_tmp).empty()){
-            out << (this->log_queue_tmp).front() << "\n";
-            (this->log_queue_tmp).pop();
-        }
-        out.close();
+    void flush()
+    {
+        auto f = [this]()
+        {
+            std::lock_guard<std::mutex> lock(flush_mux);
+            if (this->log_queue.empty())
+            {
+                return;
+            }
+            this->log_queue_tmp = std::move(this->log_queue);
+            this->log_queue = std::queue<std::string>{};
+            std::ofstream out(SAVING_PATH, std::ios::app);
+            while (!(this->log_queue_tmp).empty())
+            {
+                out << (this->log_queue_tmp).front() << "\n";
+                (this->log_queue_tmp).pop();
+            }
+            out.close();
         };
         std::thread t(f);
         t.detach();
     }
+
 private:
     inline static bool flush_flag = false;
     std::queue<std::string> log_queue;
@@ -170,7 +154,7 @@ private:
     std::mutex add_mux;
     inline static std::unique_ptr<std::thread> flush_thread;
     inline static std::mutex create_mux{};
-    inline static Log* log = nullptr;
+    inline static Log *log = nullptr;
 };
 
 #define LOG_INFO(message) Log::instance()->add(message, 1)
