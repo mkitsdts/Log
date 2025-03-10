@@ -1,51 +1,51 @@
 {
+    gcc_arch_x64_plat_windows = {
+        arch = "x64",
+        plat = "windows",
+        __checked = {
+            program = "gcc",
+            name = "gcc"
+        },
+        __global = true
+    },
     tool_target_toy_log_windows_x64_sh = {
-        program = "g++",
         toolname = "gxx",
+        program = "g++",
         toolchain_info = {
-            name = "gcc",
             arch = "x64",
             plat = "windows",
-            cachekey = "gcc_arch_x64_plat_windows"
+            cachekey = "gcc_arch_x64_plat_windows",
+            name = "gcc"
         }
-    },
-    gcc_arch_x64_plat_windows = {
-        __checked = {
-            name = "gcc",
-            program = "gcc"
-        },
-        plat = "windows",
-        __global = true,
-        arch = "x64"
     },
     tool_target_toy_log_windows_x64_ld = {
-        program = "g++",
         toolname = "gxx",
+        program = "g++",
         toolchain_info = {
-            name = "gcc",
             arch = "x64",
             plat = "windows",
-            cachekey = "gcc_arch_x64_plat_windows"
-        }
-    },
-    tool_target_toy_log_windows_x64_cxx = {
-        program = "gcc",
-        toolname = "gcc",
-        toolchain_info = {
-            name = "gcc",
-            arch = "x64",
-            plat = "windows",
-            cachekey = "gcc_arch_x64_plat_windows"
+            cachekey = "gcc_arch_x64_plat_windows",
+            name = "gcc"
         }
     },
     tool_target_toy_log_windows_x64_cc = {
-        program = "gcc",
         toolname = "gcc",
+        program = "gcc",
         toolchain_info = {
-            name = "gcc",
             arch = "x64",
             plat = "windows",
-            cachekey = "gcc_arch_x64_plat_windows"
+            cachekey = "gcc_arch_x64_plat_windows",
+            name = "gcc"
+        }
+    },
+    tool_target_toy_log_windows_x64_cxx = {
+        toolname = "gcc",
+        program = "gcc",
+        toolchain_info = {
+            arch = "x64",
+            plat = "windows",
+            cachekey = "gcc_arch_x64_plat_windows",
+            name = "gcc"
         }
     }
 }

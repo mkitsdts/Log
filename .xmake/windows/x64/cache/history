@@ -1,12 +1,20 @@
 {
     cmdlines = {
+        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\explorer.lua]],
+        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\apis.lua]],
+        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\config.lua]],
         [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\update_intellisense.lua .vscode clangd]],
+        "xmake check",
         "xmake ",
         "xmake ",
         "xmake ",
         "xmake ",
-        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\explorer.lua]],
-        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\explorer.lua]],
+        "xmake ",
+        "xmake ",
+        "xmake ",
+        "xmake ",
+        "xmake ",
+        "xmake ",
         "xmake "
     }
 }
