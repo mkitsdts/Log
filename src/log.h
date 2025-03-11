@@ -11,6 +11,7 @@
 #include "logqueue.h"
 
 const std::string SAVING_PATH = "./log.txt"; // 日志保存路径
+const size_t MAX_LOG_SIZE = 256; // 日志队列最大长度
 
 class Log
 {
@@ -33,7 +34,10 @@ public:
         std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
         tmp += "[INFO]:" + message;
         log_queue.push(tmp);
-        cv.notify_one();
+        if (log_queue.size() > MAX_LOG_SIZE)
+        {
+            cv.notify_one();
+        }
     }
 
     static void Warn(const std::string &message)
@@ -55,6 +59,7 @@ public:
         std::string tmp = std::to_string(tm->tm_year + 1900) + "-" + std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + ":" + std::to_string(tm->tm_min) + ":" + std::to_string(tm->tm_sec);
         tmp += "[ERROR]:" + message;
         log_queue.push(tmp);
+        std::cout << tmp << std::endl;
         cv.notify_one();
     }
 

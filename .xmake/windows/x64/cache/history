@@ -15,6 +15,14 @@
         "xmake ",
         "xmake ",
         "xmake ",
-        "xmake "
+        "xmake ",
+        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\explorer.lua]],
+        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\config.lua]],
+        "xmake ",
+        [[xmake lua C:\msys64\mingw64\share\xmake\modules\private\utils\statistics.lua]],
+        [[xmake lua C:\msys64\mingw64\share\xmake\actions\build\cleaner.lua]],
+        "xmake ",
+        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\explorer.lua]],
+        [[xmake l c:\Users\mkits\.vscode\extensions\tboox.xmake-vscode-2.4.0\assets\config.lua]]
     }
 }

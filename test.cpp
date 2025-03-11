@@ -24,7 +24,5 @@ int main()
     t2.detach();
     t3.detach();
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    getchar();
-    getchar();
     return 0;
 }

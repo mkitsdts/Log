@@ -1,61 +1,63 @@
 {
-    ["core.tools.gcc.has_cflags"] = {
-        ["gcc_14.2.0"] = {
-            ["-print-multiarch"] = true,
-            ["-S"] = true,
-            ["-no-canonical-prefixes"] = true,
-            ["-dumpversion"] = true,
-            ["-E"] = true,
-            ["-c"] = true,
-            ["-print-sysroot-headers-suffix"] = true,
-            ["-time"] = true,
-            ["-print-multi-lib"] = true,
-            ["-dumpspecs"] = true,
-            ["-o"] = true,
-            ["--version"] = true,
-            ["-print-search-dirs"] = true,
-            ["-x"] = true,
-            ["-save-temps"] = true,
-            ["-print-multi-os-directory"] = true,
-            ["-print-multi-directory"] = true,
-            ["-Xpreprocessor"] = true,
-            ["-dumpmachine"] = true,
-            ["-pie"] = true,
-            ["--target-help"] = true,
-            ["-B"] = true,
-            ["--param"] = true,
-            ["-print-sysroot"] = true,
-            ["-Xassembler"] = true,
-            ["-Xlinker"] = true,
-            ["-shared"] = true,
-            ["-pipe"] = true,
-            ["-pass-exit-codes"] = true,
-            ["-v"] = true,
-            ["--help"] = true,
-            ["-print-libgcc-file-name"] = true
-        }
-    },
-    find_program = {
+    find_program_gcc_arch_x64_plat_windows_checktoolcc = {
         gcc = "gcc"
     },
-    find_program_gcc_arch_x64_plat_windows_checktoolsh = {
-        ["g++"] = "g++"
+    find_program = {
+        gcc = "gcc",
+        git = "git",
+        ping = "ping"
     },
     find_program_gcc_arch_x64_plat_windows_checktoolcxx = {
         gcc = "gcc"
     },
-    find_programver = {
-        gcc = "14.2.0"
+    ["core.tools.gcc.has_cflags"] = {
+        ["gcc_14.2.0"] = {
+            ["-print-sysroot"] = true,
+            ["-dumpversion"] = true,
+            ["-print-multi-lib"] = true,
+            ["-print-multiarch"] = true,
+            ["-B"] = true,
+            ["-Xassembler"] = true,
+            ["-time"] = true,
+            ["-Xlinker"] = true,
+            ["-print-multi-directory"] = true,
+            ["-S"] = true,
+            ["-o"] = true,
+            ["-pipe"] = true,
+            ["-print-libgcc-file-name"] = true,
+            ["-c"] = true,
+            ["--version"] = true,
+            ["-print-search-dirs"] = true,
+            ["-pass-exit-codes"] = true,
+            ["-E"] = true,
+            ["--target-help"] = true,
+            ["-v"] = true,
+            ["-no-canonical-prefixes"] = true,
+            ["--param"] = true,
+            ["-print-sysroot-headers-suffix"] = true,
+            ["-pie"] = true,
+            ["-Xpreprocessor"] = true,
+            ["-dumpmachine"] = true,
+            ["-save-temps"] = true,
+            ["-print-multi-os-directory"] = true,
+            ["-x"] = true,
+            ["-shared"] = true,
+            ["-dumpspecs"] = true,
+            ["--help"] = true
+        }
     },
     ["lib.detect.has_flags"] = {
         ["windows_x64_gcc_14.2.0_cxx_cxflags_-m64_-MMD -MF"] = true,
         ["windows_x64_gcc_14.2.0_cxx_cxflags_-m64_-Wno-gnu-line-marker -Werror"] = true,
         ["windows_x64_gcc_14.2.0_cxx_cxflags_-m64_-fdiagnostics-color=always"] = true
     },
-    find_program_gcc_arch_x64_plat_windows_checktoolcc = {
-        gcc = "gcc"
+    find_program_gcc_arch_x64_plat_windows_checktoolsh = {
+        ["g++"] = "g++"
     },
     find_program_gcc_arch_x64_plat_windows_checktoolld = {
         ["g++"] = "g++"
+    },
+    find_programver = {
+        gcc = "14.2.0"
     }
 }
