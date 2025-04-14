@@ -1,5 +1,5 @@
 set_project("toy_log")
-
+set_languages("cxx20")
 -- set xmake minimum version
 set_xmakever("2.5.1")
 
